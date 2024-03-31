@@ -52,6 +52,34 @@ const CategoriesPage = () => {
         });
     }
 
+    const handleDeleteCategory = async (id) => {
+        setCategories(prev => {
+            const currentCategories = prev.filter(category => category._id !== id);
+            return currentCategories;
+        });
+
+        const creationPromise = new Promise(async (resolve, reject) => {
+            const response = await fetch('/api/categories', {
+                method: 'DELETE',
+                body: JSON.stringify(id),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if(response.ok) {
+                resolve();
+            }else{
+                reject();
+            }
+        }); 
+
+        await toast.promise(creationPromise, {
+            loading: 'Deleting...',
+            success: 'Deleted!',
+            error: 'Can not Delete!'
+        });
+    };
+
     if(fetching) {
         return <p className="text-center mt-8">Loading...</p>
     }
@@ -103,6 +131,9 @@ const CategoriesPage = () => {
                                 setCategoryId(category._id);
                             }}>
                                 Edit
+                            </button>
+                            <button type="button" onClick={handleDeleteCategory.bind(null, category._id)}>
+                                Delete
                             </button>
                         </div>
                     </div>

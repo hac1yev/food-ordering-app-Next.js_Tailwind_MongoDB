@@ -21,6 +21,16 @@ export async function PUT(req) {
     return Response.json({ category });
 }
 
+export async function DELETE(req) {
+    const id = await req.json();
+
+    await connectToDB();
+
+    await Category.findByIdAndDelete({ _id: id });
+
+    return Response.json(true);
+}
+
 export async function GET(req) {
     await connectToDB();
 
